@@ -40,6 +40,7 @@ public class DestroyServlet extends HttpServlet {
             Task t = em.find(Task.class, (Integer)(request.getSession().getAttribute("task_id")));
 
 
+            //データ削除処理
             em.getTransaction().begin();
             em.remove(t);
             em.getTransaction().commit();

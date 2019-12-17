@@ -37,11 +37,32 @@ public class IndexServlet extends HttpServlet {
         // TODO Auto-generated method stub
         EntityManager em = DBUtil.createEntityManager();
 
-        List<Task> tasks = em.createNamedQuery("getAllTasks", Task.class).getResultList();
+        //開くページ数を取得（デフォルトは1ページ目）
+        int page =1;
+
+        //pageのパラメータがなかったり数字でないものが指定される
+        //その場合は処理を止めないためスルーする
+        try{
+            page = Integer.parseInt(request.getParameter("page"));
+        }catch(NumberFormatException e){}
+
+        //最大件数と開始位置を指定してタスクを取得
+        //Firstresult何件目からデータを取得する
+        //Masresult1データの最大件数15件を設定
+        List<Task> tasks = em.createNamedQuery("getAllTasks", Task.class)
+                .setFirstResult(15*(page -1))
+                .setMaxResults(15)
+                .getResultList();
+
+        //全件数を取得
+        long tasks_count = (long)em.createNamedQuery("getTasksCount",Long.class)
+                .getSingleResult();
 
         em.close();
 
         request.setAttribute("tasks", tasks);
+        request.setAttribute("tasks_count", tasks_count); //全件数
+        request.setAttribute("page", page);//ページ数
 
         RequestDispatcher rd=request.getRequestDispatcher("/WEB-INF/views/tasks/index.jsp");
         rd.forward(request, response);
