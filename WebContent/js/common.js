@@ -1,8 +1,8 @@
 
-let destroy = document.getElementByid("destroy");
+let destroy = document.getElementById('destroy');
 
-destroy.onclick = function confirmDestroy(){
+destroy.addEventListener( 'click' , ()=> {
     if(confirm("本当に削除してよろしいですか?")){
         document.forms[1].submit();
     }
-}
+},false);
